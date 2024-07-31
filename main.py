@@ -9,24 +9,24 @@ from matplotlib.colors import hsv_to_rgb
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 
-RECIPIE_PATH: str = "recipie.csv"
+RECIPE_PATH: str = "recipe.csv"
 PLOT_SET_PATH: str = "plots.csv"
 
 TITLE: str = "Temperature Profiles"
 
 OPACITY: float = 0.6
 
-recipies: dict[str, list[tuple[float, float]]] = {}
+recipes: dict[str, list[tuple[float, float]]] = {}
 
-with open(RECIPIE_PATH, 'r') as recipe_file:
-    recipie_reader: reader = reader(recipe_file)
-    for row in islice(recipie_reader, 1, None):
+with open(RECIPE_PATH, 'r') as recipe_file:
+    recipe_reader: reader = reader(recipe_file)
+    for row in islice(recipe_reader, 1, None):
         row_iter: Iterator[str] = iter(row)
         cube_flavor: str = next(row_iter)
         current_temp: float = float(next(row_iter))
         current_time: float = 0
 
-        recipie: list[tuple[float, float]] = [(current_time, current_temp)]
+        recipe: list[tuple[float, float]] = [(current_time, current_temp)]
 
         while True:
             try:
@@ -34,7 +34,7 @@ with open(RECIPIE_PATH, 'r') as recipe_file:
             except StopIteration:
                 break
             current_time += hold_time
-            recipie.append((current_time, current_temp))
+            recipe.append((current_time, current_temp))
 
             try:
                 rate: float = float(next(row_iter)) * 60
@@ -43,21 +43,21 @@ with open(RECIPIE_PATH, 'r') as recipe_file:
                 break
             current_time += (new_temp - current_temp) / rate
             current_temp = new_temp
-            recipie.append((current_time, current_temp))
+            recipe.append((current_time, current_temp))
 
-        recipies[cube_flavor] = recipie
+        recipes[cube_flavor] = recipe
 
-max_x_val: float = max(point[0] for recipie in recipies.values() for point in recipie)
+max_x_val: float = max(point[0] for recipe in recipes.values() for point in recipe)
 
 plots: list[list[tuple[str, list[tuple[float, float]]]]] = []
 
 with open(PLOT_SET_PATH, 'r') as plot_set_file:
     plot_set_reader: reader = reader(plot_set_file)
-    for recipie_names in plot_set_reader:
+    for recipe_names in plot_set_reader:
         plot: list[tuple[str, list[tuple[float, float]]]] = []
-        for recipie_name in recipie_names:
-            recipie: list[tuple[float, float]] = recipies[recipie_name]
-            plot.append((recipie_name, recipie))
+        for recipe_name in recipe_names:
+            recipe: list[tuple[float, float]] = recipes[recipe_name]
+            plot.append((recipe_name, recipe))
         plots.append(plot)
 
 subplots: tuple[Figure, Sequence[Axes]] = plt.subplots(nrows=len(plots), sharex="col")
@@ -68,10 +68,10 @@ for ax, plot in zip(axs, plots):
     num_plots: int = len(plot)
     colors = [hsv_to_rgb((h / num_plots, 1, 1)) for h in range(num_plots)]
     lines: list[list[Line2D]] = []
-    for (recipie_name, recipie), color in zip(plot, colors):
+    for (recipe_name, recipe), color in zip(plot, colors):
         lines.append(ax.plot(
-            *zip(*recipie),
-            label=recipie_name,
+            *zip(*recipe),
+            label=recipe_name,
             color=color,
             alpha=OPACITY
         ))
