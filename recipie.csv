@@ -1,0 +1,11 @@
+Sample,Temp 0 (C),Hold 0 (h),Rate 1 (K/min),Temp 1 (C),Hold 1 (h),Rate 2 (K/min),Temp 2(C),Hold 2 (h),Rate 3 (K/min),Temp 3(C),Hold 3 (h),...
+Normal (Sample 1),0,0,2,1600,2,-5,0
+Sample 2,0,0,4,1600,2,-5,0
+Sample 3,0,0,6,1600,2,-5,0
+Sample 4,0,0,8,1600,2,-5,0
+Sample 5,0,0,2,1600,1.75,-5,0
+Sample 6,0,0,2,1600,1.5,-5,0
+Sample 7,0,0,2,1600,1.25,-5,0
+Sample 8,0,0,8,1100,2,8,1600,2,-5,0
+Sample 9,0,0,8,450,2,8,1600,2,-5,0
+Sample 10,0,0,8,450,2,8,1100,2,8,1600,2,-5,0
